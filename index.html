@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-CDN 요금제 | Speedy</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #171717;
+            line-height: 1.6;
+        }
+
+        /* ── Hero Section ── */
+        .hero {
+            text-align: center;
+            padding: 140px 24px 48px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+            background: #165df5;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+            color: #171717;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            color: #71717a;
+            margin-bottom: 40px;
+        }
+
+        /* ── Toggle ── */
+        .toggle-wrap {
+            display: inline-flex;
+            background: #f4f4f5;
+            border-radius: 100px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .toggle-btn {
+            padding: 10px 24px;
+            border-radius: 100px;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 500;
+            color: #71717a;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-btn.active {
+            background: #171717;
+            color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .toggle-btn .discount-tag {
+            display: inline-block;
+            background: #165df5;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 100px;
+        }
+
+        .toggle-btn.active .discount-tag {
+            background: #165df5;
+        }
+
+        /* ── Pricing Cards ── */
+        .pricing-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #e4e4e7;
+            border-radius: 20px;
+            padding: 36px 28px;
+            background: #ffffff;
+            position: relative;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: #d4d4d8;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        .card.recommended {
+            border: 2px solid #165df5;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+
+        .plan-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #171717;
+            margin-bottom: 4px;
+        }
+
+        .card.recommended .plan-name {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recommend-badge {
+            display: inline-block;
+            background: #165df5;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 100px;
+        }
+
+        .plan-desc {
+            font-size: 14px;
+            color: #71717a;
+            margin-bottom: 24px;
+            min-height: 40px;
+        }
+
+        .price-area {
+            margin-bottom: 24px;
+            min-height: 56px;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .price-original {
+            font-size: 14px;
+            color: #a1a1aa;
+            text-decoration: line-through;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .price-amount {
+            font-size: 36px;
+            font-weight: 800;
+            color: #171717;
+            letter-spacing: -0.02em;
+        }
+
+        .price-unit {
+            font-size: 16px;
+            color: #71717a;
+            font-weight: 400;
+        }
+
+        .price-note {
+            font-size: 13px;
+            color: #a1a1aa;
+            margin-top: 4px;
+        }
+
+        .cta-btn {
+            display: block;
+            width: 100%;
+            padding: 14px 0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            margin-bottom: 28px;
+            text-decoration: none;
+        }
+
+        .cta-outline {
+            background: #ffffff;
+            color: #171717;
+            border: 1px solid #d4d4d8;
+        }
+
+        .cta-outline:hover {
+            background: #f4f4f5;
+        }
+
+        .cta-solid {
+            background: #165df5;
+            color: #ffffff;
+        }
+
+        .cta-solid:hover {
+            background: #1248c4;
+        }
+
+        /* ── Feature List ── */
+        .features-divider {
+            height: 1px;
+            background: #e4e4e7;
+            margin-bottom: 20px;
+        }
+
+        .features-inherited {
+            font-size: 13px;
+            font-weight: 700;
+            color: #71717a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .features-inherited .plus-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #f4f4f5;
+            font-size: 12px;
+            color: #71717a;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            font-size: 14px;
+            color: #3f3f46;
+            padding: 5px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .feature-list li::before {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            margin-top: 2px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") no-repeat center;
+        }
+
+        .feature-toggle {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #71717a;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .feature-toggle:hover {
+            color: #171717;
+        }
+
+        .feature-toggle .arrow {
+            transition: transform 0.2s ease;
+            font-size: 11px;
+        }
+
+        .feature-toggle.expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        .features-hidden {
+            display: none;
+        }
+
+        .features-hidden.show {
+            display: block;
+        }
+
+        /* ── FAQ Section (Optional) ── */
+        .faq-section {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 60px 24px 100px;
+        }
+
+        .faq-section h2 {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e4e4e7;
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            color: #171717;
+            text-align: left;
+            padding: 20px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question .faq-arrow {
+            font-size: 20px;
+            color: #71717a;
+            transition: transform 0.2s ease;
+        }
+
+        .faq-question.open .faq-arrow {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            display: none;
+            font-size: 15px;
+            color: #52525b;
+            padding-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .faq-answer.show {
+            display: block;
+        }
+
+        /* ── CTA Banner ── */
+        .cta-banner {
+            background: #f9fafb;
+            border-top: 1px solid #e4e4e7;
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .cta-banner h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cta-banner p {
+            font-size: 16px;
+            color: #71717a;
+            margin-bottom: 28px;
+        }
+
+        .cta-banner a {
+            display: inline-block;
+            padding: 14px 36px;
+            background: #165df5;
+            color: #fff;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .cta-banner a:hover {
+            background: #1248c4;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero {
+                padding: 60px 20px 36px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .card {
+                padding: 28px 24px;
+            }
+
+            .price-amount {
+                font-size: 30px;
+            }
+
+            .toggle-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════ Hero ═══════ -->
+<section class="hero">
+    <span class="badge">S-CDN 요금제</span>
+    <h1>트래픽 규모에 맞는<br>CDN 플랜을 선택해 보세요</h1>
+    <p>모든 플랜에 캐시 제공과 국내 CDN이 기본 포함되어 있습니다</p>
+
+    <div class="toggle-wrap">
+        <button class="toggle-btn" data-plan="monthly" onclick="togglePlan('monthly')">Monthly</button>
+        <button class="toggle-btn active" data-plan="yearly" onclick="togglePlan('yearly')">Yearly <span class="discount-tag">30% off</span></button>
+    </div>
+</section>
+
+<!-- ═══════ Pricing Cards ═══════ -->
+<section class="pricing-section">
+    <div class="cards-grid">
+
+        <!-- Free -->
+        <div class="card">
+            <div class="plan-name">S-CDN Free</div>
+            <p class="plan-desc">개인 또는 소규모 비즈니스를 위한 무료 플랜</p>
+
+            <div>
+                <span class="price-original" style="visibility:hidden;">&nbsp;</span>
+                <div class="price-area">
+                    <span class="price-amount">무료</span>
+                </div>
+            </div>
+
+            <a href="https://scdn-email.signal-finder.app/scdn-free" target="_blank" class="cta-btn cta-outline">무료 체험 신청하기</a>
+
+            <div class="features-divider"></div>
+            <p class="price-note" style="margin-bottom:12px;">대한민국 ISP 이용, 사용기간 12개월</p>
+
+            <ul class="feature-list" id="free-features-main">
+                <li>월 전송량 300GB</li>
+                <li>월 스토리지 3GB</li>
+                <li>도메인 1EA</li>
+                <li>캐시 제공</li>
+                <li>국내 한정</li>
+                <li>인프라 용량 1G급</li>
+            </ul>
+            <ul class="feature-list features-hidden" id="free-features-more">
+                <li>SSL 인증서 제공</li>
+                <li>기본 통계 제공</li>
+                <li>대시보드 제공</li>
+                <li>기본 캐시 설정</li>
+                <li>커스텀 도메인 연결</li>
+                <li>기본 DDoS 방어</li>
+                <li>이메일 기술지원</li>
+            </ul>
+            <button class="feature-toggle" onclick="toggleFeatures('free')">
+                <span id="free-toggle-text">더보기</span>
+                <span class="arrow">▼</span>
+            </button>
+        </div>
+
+        <!-- Basic -->
+        <div class="card">
+            <div class="plan-name">S-CDN Basic</div>
+            <p class="plan-desc">중소기업 및 스타트업을 위한 플랜</p>
+
+            <div>
+                <span class="price-original" data-monthly="　" data-yearly="50,000원">50,000원</span>
+                <div class="price-area">
+                    <span class="price-amount" data-monthly="50,000" data-yearly="35,000">35,000</span>
+                    <span class="price-unit">원~ /월</span>
+                </div>
+            </div>
+
+            <a href="https://scdn-email.signal-finder.app/scdn-basic" target="_blank" class="cta-btn cta-outline">베이직 플랜 신청하기</a>
+
+            <div class="features-divider"></div>
+            <div class="features-inherited">
+                <span class="plus-icon">+</span> S-CDN Free의 모든 기능
+            </div>
+            <ul class="feature-list">
+                <li>전송량 1TB</li>
+                <li>스토리지 10GB</li>
+                <li>One Time URL</li>
+                <li>Referrer 차단</li>
+                <li>Purge API</li>
+                <li>업로드 API</li>
+            </ul>
+        </div>
+
+        <!-- Pro (Recommended) -->
+        <div class="card recommended">
+            <div class="plan-name">S-CDN Pro <span class="recommend-badge">추천</span></div>
+            <p class="plan-desc">성장하는 기업을 위한 플랜</p>
+
+            <div>
+                <span class="price-original" data-monthly="　" data-yearly="400,000원">400,000원</span>
+                <div class="price-area">
+                    <span class="price-amount" data-monthly="400,000" data-yearly="300,000">300,000</span>
+                    <span class="price-unit">원~ /월</span>
+                </div>
+            </div>
+
+            <a href="https://scdn-email.signal-finder.app/scdn-pro" target="_blank" class="cta-btn cta-solid">프로 플랜 시작하기</a>
+
+            <div class="features-divider"></div>
+            <div class="features-inherited">
+                <span class="plus-icon">+</span> S-CDN Basic의 모든 기능
+            </div>
+            <ul class="feature-list" id="pro-features-main">
+                <li>전송량 10TB</li>
+                <li>스토리지 100GB</li>
+                <li>도메인 3EA</li>
+                <li>캐시, 다운로드, 미디어 제공</li>
+                <li>국내 + 글로벌</li>
+                <li>인프라 용량 10G급</li>
+            </ul>
+            <ul class="feature-list features-hidden" id="pro-features-more">
+                <li>HLS 프로토콜</li>
+                <li>Relay 구성</li>
+                <li>엣지 서버간 콘텐츠 공유</li>
+                <li>콘텐츠 오류 대응</li>
+                <li>로그분석 대응</li>
+                <li>모니터링 검증 Tool</li>
+                <li>무정지 및 최단 응답 시간 보장</li>
+                <li>통계 API</li>
+                <li>Dedi 입점</li>
+                <li>Share 엔지니어</li>
+            </ul>
+            <button class="feature-toggle" onclick="toggleFeatures('pro')">
+                <span id="pro-toggle-text">더보기</span>
+                <span class="arrow">▼</span>
+            </button>
+        </div>
+
+        <!-- Max -->
+        <div class="card">
+            <div class="plan-name">S-CDN Max</div>
+            <p class="plan-desc">비즈니스 환경에 맞는 맞춤형 커스텀 플랜</p>
+
+            <div>
+                <span class="price-original" style="visibility:hidden;">　</span>
+                <div class="price-area">
+                    <span class="price-amount" style="font-size:30px;">별도 문의</span>
+                </div>
+            </div>
+
+            <a href="https://scdn-email.signal-finder.app/scdn-max" target="_blank" class="cta-btn cta-outline">도입 문의하기</a>
+
+            <div class="features-divider"></div>
+            <div class="features-inherited">
+                <span class="plus-icon">+</span> S-CDN Pro의 모든 기능
+            </div>
+            <ul class="feature-list" id="max-features-main">
+                <li>캐시, 다운로드, 미디어, 보안, 멀티CDN</li>
+                <li>인프라 용량 무제한</li>
+                <li>MPEG-DASH, WEB-RTC 프로토콜</li>
+                <li>고정 IP</li>
+                <li>실시간 로그 전송 LDS</li>
+                <li>실시간 콘텐츠 오류 대응</li>
+            </ul>
+            <ul class="feature-list features-hidden" id="max-features-more">
+                <li>SSL 인증서 발급 및 갱신</li>
+                <li>실시간 로그 분석</li>
+                <li>이미지 리사이징</li>
+                <li>국내, 글로벌, 중국</li>
+                <li>전담 엔지니어</li>
+                <li>미디어 API</li>
+                <li>추가 채널 지원 (고객 소통)</li>
+            </ul>
+            <button class="feature-toggle" onclick="toggleFeatures('max')">
+                <span id="max-toggle-text">더보기</span>
+                <span class="arrow">▼</span>
+            </button>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════ FAQ ═══════ -->
+<section class="faq-section">
+    <h2>자주 묻는 질문</h2>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            무료 플랜에서 유료 플랜으로 전환하면 데이터가 유지되나요?
+            <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">네, 무료 플랜에서 유료 플랜으로 업그레이드 시 기존 설정과 데이터가 모두 유지됩니다. 별도의 마이그레이션 작업 없이 플랜만 변경하면 즉시 적용됩니다.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            트래픽이 플랜 제공량을 초과하면 어떻게 되나요?
+            <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">제공 전송량을 초과하더라도 서비스가 중단되지 않습니다. 초과 트래픽에 대해서는 사전 안내 후 별도 과금됩니다. 트래픽 사용량은 대시보드에서 실시간으로 확인할 수 있습니다.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            CDN 설정은 직접 해야 하나요?
+            <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">아닙니다. 스피디 전문 엔지니어가 초기 CDN 설정부터 도메인 연결, 캐시 정책 구성까지 함께 도와드립니다. 별도의 기술 지식 없이도 빠르게 시작하실 수 있습니다.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            플랜을 중간에 업그레이드할 수 있나요?
+            <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">네, 언제든지 상위 플랜으로 업그레이드하실 수 있습니다. 업그레이드는 즉시 적용되며, 기존 설정과 데이터는 그대로 유지됩니다. 플랜 변경은 대시보드에서 직접 신청하거나 담당 매니저에게 문의해 주세요.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+            S-CDN Max 플랜의 별도 문의는 어떻게 진행되나요?
+            <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-answer">도입 문의하기 버튼을 통해 요청하시면, 전담 엔지니어가 트래픽 규모와 서비스 요구사항을 분석하여 최적의 맞춤 견적을 제공합니다. 영업일 기준 1일 내 회신드립니다.</div>
+    </div>
+</section>
+
+<!-- ═══════ CTA Banner ═══════ -->
+<section class="cta-banner">
+    <h3>어떤 플랜이 적합한지 모르겠다면?</h3>
+    <p>스피디 전문가가 트래픽 분석부터 최적의 CDN 구성까지 무료로 컨설팅해 드립니다</p>
+    <a href="https://www.speedykorea.com/contact" target="_blank">무료 상담 신청하기</a>
+</section>
+
+<script>
+    // ── 월간/연간 토글 ──
+    function togglePlan(plan) {
+        const buttons = document.querySelectorAll('.toggle-btn');
+        buttons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.plan === plan);
+        });
+
+        const amounts = document.querySelectorAll('.price-amount[data-monthly]');
+        const originals = document.querySelectorAll('.price-original[data-monthly]');
+
+        amounts.forEach(el => {
+            el.textContent = el.dataset[plan];
+        });
+
+        originals.forEach(el => {
+            if (plan === 'yearly') {
+                el.textContent = el.dataset.yearly;
+                el.style.visibility = 'visible';
+            } else {
+                el.textContent = '\u00A0';
+                el.style.visibility = 'hidden';
+            }
+        });
+    }
+
+    // ── 기능 더보기/접기 ──
+    function toggleFeatures(plan) {
+        const moreList = document.getElementById(plan + '-features-more');
+        const toggleText = document.getElementById(plan + '-toggle-text');
+        const toggleBtn = moreList.parentElement.querySelector('.feature-toggle');
+
+        moreList.classList.toggle('show');
+        toggleBtn.classList.toggle('expanded');
+
+        if (moreList.classList.contains('show')) {
+            toggleText.textContent = '접기';
+        } else {
+            toggleText.textContent = '더보기';
+        }
+    }
+
+    // ── FAQ 토글 ──
+    function toggleFaq(el) {
+        el.classList.toggle('open');
+        const answer = el.nextElementSibling;
+        answer.classList.toggle('show');
+    }
+</script>
+
+</body>
+</html>
