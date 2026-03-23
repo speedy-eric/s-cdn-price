@@ -444,6 +444,64 @@
             }
         }
     </style>
+    <script>
+(function () {
+  // First-touch attribution: skip if cookie already exists
+  if (document.cookie.split(';').some(function (c) { return c.trim().indexOf('_lt_source=') === 0; })) {
+    return;
+  }
+
+  var params = new URLSearchParams(window.location.search);
+  var utm_source = params.get('utm_source');
+  var utm_medium = params.get('utm_medium');
+  var utm_campaign = params.get('utm_campaign');
+  var utm_term = params.get('utm_term');
+  var utm_content = params.get('utm_content');
+
+  var referrer = document.referrer || '';
+  var source = utm_source || '';
+  var medium = utm_medium || '';
+
+  // Auto-detect source from referrer when no UTM params present
+  if (!utm_source && !utm_medium && !utm_campaign) {
+    var ref = referrer.toLowerCase();
+    if (ref.indexOf('google.') !== -1) {
+      source = 'google'; medium = 'organic';
+    } else if (ref.indexOf('naver.') !== -1) {
+      source = 'naver'; medium = 'organic';
+    } else if (ref.indexOf('daum.') !== -1) {
+      source = 'daum'; medium = 'organic';
+    } else if (ref.indexOf('instagram.') !== -1) {
+      source = 'instagram'; medium = 'social';
+    } else if (ref.indexOf('facebook.') !== -1 || ref.indexOf('fb.') !== -1) {
+      source = 'facebook'; medium = 'social';
+    } else if (ref.indexOf('linkedin.') !== -1) {
+      source = 'linkedin'; medium = 'social';
+    } else if (ref.indexOf('t.co') !== -1 || ref.indexOf('twitter.') !== -1) {
+      source = 'twitter'; medium = 'social';
+    } else if (ref) {
+      source = 'referral'; medium = 'referral';
+    }
+  }
+
+  var data = {
+    utm_source: source || null,
+    utm_medium: medium || null,
+    utm_campaign: utm_campaign || null,
+    utm_term: utm_term || null,
+    utm_content: utm_content || null,
+    referrer: referrer || null,
+    landing_page: window.location.pathname,
+    visit_timestamp: new Date().toISOString()
+  };
+
+  var expires = new Date();
+  expires.setDate(expires.getDate() + 30);
+  document.cookie = '_lt_source=' + encodeURIComponent(JSON.stringify(data))
+    + '; expires=' + expires.toUTCString()
+    + '; path=/; SameSite=Lax';
+})();
+    </script>
 </head>
 <body>
 
@@ -475,7 +533,7 @@
                 </div>
             </div>
 
-            <a href="https://scdn-email.signal-finder.app/scdn-free" target="_blank" class="cta-btn cta-outline">무료 체험 신청하기</a>
+            <a href="javascript:void(0)" onclick="openLtForm('Free')" class="cta-btn cta-outline">무료 체험 신청하기</a>
 
             <div class="features-divider"></div>
             <p class="price-note" style="margin-bottom:12px;">대한민국 ISP 이용, 사용기간 12개월</p>
@@ -516,7 +574,7 @@
                 </div>
             </div>
 
-            <a href="https://scdn-email.signal-finder.app/scdn-basic" target="_blank" class="cta-btn cta-outline">베이직 플랜 신청하기</a>
+            <a href="javascript:void(0)" onclick="openLtForm('Basic')" class="cta-btn cta-outline">베이직 플랜 신청하기</a>
 
             <div class="features-divider"></div>
             <div class="features-inherited">
@@ -545,7 +603,7 @@
                 </div>
             </div>
 
-            <a href="https://scdn-email.signal-finder.app/scdn-pro" target="_blank" class="cta-btn cta-solid">프로 플랜 시작하기</a>
+            <a href="javascript:void(0)" onclick="openLtForm('Pro')" class="cta-btn cta-solid">프로 플랜 시작하기</a>
 
             <div class="features-divider"></div>
             <div class="features-inherited">
@@ -589,7 +647,7 @@
                 </div>
             </div>
 
-            <a href="https://scdn-email.signal-finder.app/scdn-max" target="_blank" class="cta-btn cta-outline">도입 문의하기</a>
+            <a href="javascript:void(0)" onclick="openLtForm('Max')" class="cta-btn cta-outline">도입 문의하기</a>
 
             <div class="features-divider"></div>
             <div class="features-inherited">
@@ -670,7 +728,7 @@
 <section class="cta-banner">
     <h3>어떤 플랜이 적합한지 모르겠다면?</h3>
     <p>스피디 전문가가 트래픽 분석부터 최적의 CDN 구성까지 무료로 컨설팅해 드립니다</p>
-    <a href="https://www.speedykorea.com/contact" target="_blank">무료 상담 신청하기</a>
+    <a href="javascript:void(0)" onclick="openLtForm()">무료 상담 신청하기</a>
 </section>
 
 <script>
@@ -721,6 +779,269 @@
         const answer = el.nextElementSibling;
         answer.classList.toggle('show');
     }
+</script>
+
+
+<style>
+  .lt-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+  }
+  .lt-overlay.lt-open {
+    display: flex;
+  }
+  .lt-modal {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;
+    margin: 16px;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .lt-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .lt-close:hover {
+    background: #f0f0f0;
+  }
+  .lt-modal h2 {
+    margin: 0 0 24px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+  }
+  .lt-field {
+    margin-bottom: 16px;
+  }
+  .lt-field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .lt-field label .lt-req {
+    color: #e53e3e;
+  }
+  .lt-field input,
+  .lt-field select,
+  .lt-field textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #111;
+    background: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+  }
+  .lt-field input:focus,
+  .lt-field select:focus,
+  .lt-field textarea:focus {
+    outline: none;
+    border-color: #165df5;
+    box-shadow: 0 0 0 3px rgba(22, 93, 245, 0.1);
+  }
+  .lt-field textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  .lt-submit {
+    width: 100%;
+    padding: 12px;
+    background: #165df5;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 8px;
+  }
+  .lt-submit:hover {
+    background: #1248c8;
+  }
+  .lt-submit:disabled {
+    background: #93b4f9;
+    cursor: not-allowed;
+  }
+  .lt-success {
+    display: none;
+    text-align: center;
+    padding: 40px 0;
+  }
+  .lt-success .lt-check {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  .lt-success h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 8px;
+  }
+  .lt-success p {
+    font-size: 15px;
+    color: #666;
+    margin: 0;
+  }
+</style>
+
+<div class="lt-overlay" id="ltOverlay" onclick="if(event.target===this)closeLtForm()">
+  <div class="lt-modal">
+    <button class="lt-close" onclick="closeLtForm()" aria-label="Close">&times;</button>
+
+    <form id="ltForm" onsubmit="submitLtForm(event)">
+      <h2>문의하기</h2>
+
+      <div class="lt-field">
+        <label>회사명 <span class="lt-req">*</span></label>
+        <input type="text" name="company" required placeholder="회사명을 입력하세요">
+      </div>
+
+      <div class="lt-field">
+        <label>이름 <span class="lt-req">*</span></label>
+        <input type="text" name="name" required placeholder="이름을 입력하세요">
+      </div>
+
+      <div class="lt-field">
+        <label>이메일 <span class="lt-req">*</span></label>
+        <input type="email" name="email" required placeholder="email@example.com">
+      </div>
+
+      <div class="lt-field">
+        <label>전화번호</label>
+        <input type="tel" name="phone" placeholder="010-0000-0000">
+      </div>
+
+      <div class="lt-field">
+        <label>플랜</label>
+        <select name="plan" id="ltPlan">
+          <option value="">선택하세요</option>
+          <option value="Free">Free</option>
+          <option value="Basic">Basic</option>
+          <option value="Pro">Pro</option>
+          <option value="Max">Max</option>
+        </select>
+      </div>
+
+      <div class="lt-field">
+        <label>메시지</label>
+        <textarea name="message" placeholder="문의 내용을 입력하세요"></textarea>
+      </div>
+
+      <button type="submit" class="lt-submit" id="ltSubmitBtn">문의 보내기</button>
+    </form>
+
+    <div class="lt-success" id="ltSuccess">
+      <div class="lt-check">&#10003;</div>
+      <h3>문의가 접수되었습니다</h3>
+      <p>빠른 시일 내에 답변드리겠습니다.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+var LT_API_URL = 'https://lead-tracker-api.YOUR_SUBDOMAIN.workers.dev';
+
+function openLtForm(plan) {
+  var overlay = document.getElementById('ltOverlay');
+  var form = document.getElementById('ltForm');
+  var success = document.getElementById('ltSuccess');
+  form.style.display = '';
+  success.style.display = 'none';
+  form.reset();
+  if (plan) {
+    document.getElementById('ltPlan').value = plan;
+  }
+  overlay.classList.add('lt-open');
+}
+
+function closeLtForm() {
+  document.getElementById('ltOverlay').classList.remove('lt-open');
+}
+
+function getLtCookie() {
+  var match = document.cookie.split(';').find(function (c) {
+    return c.trim().indexOf('_lt_source=') === 0;
+  });
+  if (!match) return {};
+  try {
+    return JSON.parse(decodeURIComponent(match.trim().substring('_lt_source='.length)));
+  } catch (e) {
+    return {};
+  }
+}
+
+function submitLtForm(event) {
+  event.preventDefault();
+  var btn = document.getElementById('ltSubmitBtn');
+  var form = document.getElementById('ltForm');
+  var formData = new FormData(form);
+
+  var payload = {};
+  formData.forEach(function (value, key) {
+    payload[key] = value;
+  });
+
+  // Merge tracking data from cookie
+  var tracking = getLtCookie();
+  Object.keys(tracking).forEach(function (key) {
+    payload[key] = tracking[key];
+  });
+
+  btn.disabled = true;
+  btn.textContent = '보내는 중...';
+
+  fetch(LT_API_URL + '/api/leads', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+    .then(function (res) {
+      if (res.status === 201) {
+        form.style.display = 'none';
+        document.getElementById('ltSuccess').style.display = '';
+      } else {
+        return res.text().then(function (t) { throw new Error(t || 'Request failed'); });
+      }
+    })
+    .catch(function (err) {
+      alert('문의 전송에 실패했습니다. 다시 시도해 주세요.\n' + err.message);
+    })
+    .finally(function () {
+      btn.disabled = false;
+      btn.textContent = '문의 보내기';
+    });
+}
 </script>
 
 </body>
