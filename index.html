@@ -727,5 +727,17 @@
     }
 </script>
 
+<script>
+    // Auto-resize: send height to parent (Framer iframe)
+    function sendHeight() {
+        var h = document.documentElement.scrollHeight;
+        window.parent.postMessage({ type: 'resize', height: h }, '*');
+    }
+    window.addEventListener('load', sendHeight);
+    window.addEventListener('resize', sendHeight);
+    new MutationObserver(sendHeight).observe(document.body, { childList: true, subtree: true });
+    setInterval(sendHeight, 500);
+</script>
+
 </body>
 </html>
