@@ -730,7 +730,10 @@
 <script>
     // Auto-resize: send height to parent (Framer iframe)
     function sendHeight() {
-        var h = document.documentElement.scrollHeight;
+        // 높이를 0으로 리셋해야 줄어든 콘텐츠도 정확히 측정됨
+        document.body.style.height = '0';
+        var h = document.body.scrollHeight;
+        document.body.style.height = '';
         window.parent.postMessage({ type: 'resize', height: h }, '*');
     }
     window.addEventListener('load', sendHeight);
