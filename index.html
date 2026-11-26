@@ -15,7 +15,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         body {
@@ -761,18 +761,19 @@
 </script>
 
 <script>
-    // Auto-resize: send height to parent (Framer iframe)
+    // Report content height when embedded, without resetting the visible page.
+    var lastSentHeight = 0;
     function sendHeight() {
-        // 높이를 0으로 리셋해야 줄어든 콘텐츠도 정확히 측정됨
-        document.body.style.height = '0';
-        var h = document.body.scrollHeight;
-        document.body.style.height = '';
+        if (window.parent === window) return;
+        var h = Math.ceil(document.body.getBoundingClientRect().height);
+        if (h === lastSentHeight) return;
+        lastSentHeight = h;
         window.parent.postMessage({ type: 'resize', height: h }, '*');
     }
     window.addEventListener('load', sendHeight);
     window.addEventListener('resize', sendHeight);
-    new MutationObserver(sendHeight).observe(document.body, { childList: true, subtree: true });
-    setInterval(sendHeight, 500);
+    new ResizeObserver(sendHeight).observe(document.body);
+    if (document.fonts) document.fonts.ready.then(sendHeight);
 </script>
 
 </body>
